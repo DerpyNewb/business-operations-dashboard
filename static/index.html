@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Property operations | Local reference</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#maintenance">Skip to maintenance queue</a>
+  <header class="page-header">
+    <div><p class="reference">Fictional property management · Local reference</p><h1>Property operations</h1><p>Review assigned work and consolidate department CSV updates.</p></div>
+    <p id="snapshot-time" class="snapshot">Disconnected</p>
+  </header>
+  <main>
+    <section class="connection" aria-label="API connection">
+      <form id="connect-form"><label for="token">Local API token <span class="hint">32 or more characters; kept in memory</span></label><div class="inline"><input id="token" type="password" required minlength="32" autocomplete="off" spellcheck="false"><button id="connect-button" type="submit">Connect</button><button id="disconnect-button" type="button" class="secondary" disabled>Disconnect</button></div></form>
+      <p id="connection-status" role="status">Enter the server token to load operating data.</p>
+    </section>
+    <nav aria-label="Dashboard sections"><a href="#maintenance">Maintenance</a><a href="#leasing">Leasing</a><a href="#finance">Finance</a><a href="#health">Source health</a><a href="#notifications">Local log</a></nav>
+    <div id="action-status" role="status" aria-live="polite" class="action-status">No operating data loaded.</div>
+    <div id="metrics" class="metrics" aria-label="Operational counts"></div>
+    <section id="maintenance" class="ledger focal">
+      <div class="section-heading"><div><h2>Maintenance queue</h2><p>Assigned tasks follow the latest accepted maintenance record.</p></div><span id="queue-count" class="count">0 tasks</span></div>
+      <div class="filters"><label for="search">Find a request<input id="search" type="search" placeholder="Summary, property or ID" disabled></label><label for="status-filter">Status<select id="status-filter" disabled><option value="">All statuses</option><option value="open">Open</option><option value="in_progress">In progress</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></label><label for="owner-filter">Owner<select id="owner-filter" disabled><option value="">All owners</option></select></label></div>
+      <div class="table-scroll" role="region" aria-label="Maintenance tasks table" tabindex="0"><table><thead><tr><th scope="col">Request / property</th><th scope="col">Priority / review</th><th scope="col">Status</th><th scope="col">Owner</th><th scope="col">Due, Manila time</th><th scope="col">Updated</th></tr></thead><tbody id="maintenance-rows"></tbody></table></div>
+      <p id="maintenance-empty" class="empty">Connect to view assigned maintenance work.</p>
+    </section>
+    <div class="workforms">
+      <section class="form-panel"><h2>Record a maintenance request</h2><p>Urgent requests require review. Leave owner blank to use the default team.</p><form id="request-form"><fieldset disabled id="request-fields"><div class="form-grid"><label for="record-id">Request ID<input id="record-id" name="record_id" required maxlength="80" pattern="[A-Za-z0-9_\-]+" placeholder="REQ-004"></label><label for="property">Property<input id="property" name="property" required maxlength="200"></label><label class="full" for="summary">Summary<textarea id="summary" name="summary" required maxlength="1000" rows="2"></textarea></label><label for="priority">Priority<select id="priority" name="priority"><option value="normal">Normal</option><option value="urgent">Urgent</option></select></label><label for="owner">Owner (optional)<input id="owner" name="owner" maxlength="200"></label><label for="due-at">Due date and time (Manila)<input id="due-at" name="due_at" type="datetime-local" required></label><label for="reported-by">Reported by<input id="reported-by" name="reported_by" required maxlength="200"></label></div><button type="submit">Create assigned request</button></fieldset></form></section>
+      <section class="form-panel"><h2>Update department data</h2><p>Import one complete CSV source. A rejected file keeps the last accepted records.</p><form id="import-form"><fieldset disabled id="import-fields"><label for="csv-kind">Department<select id="csv-kind"><option value="maintenance">Maintenance</option><option value="leasing">Leasing</option><option value="finance">Finance</option></select></label><label for="csv-file">CSV file <span class="hint">UTF-8, at most 512 KiB and 1,000 rows</span><input id="csv-file" type="file" accept=".csv,text/csv" required></label><button type="submit">Import selected CSV</button></fieldset></form><div class="other-actions"><button id="refresh-button" type="button" class="secondary" disabled>Refresh configured CSV files</button><button id="automations-button" type="button" class="secondary" disabled>Record reminders and daily summary</button></div><p class="hint">Automation records local notifications only. No messages are sent.</p></section>
+    </div>
+    <section id="leasing" class="ledger"><div class="section-heading"><div><h2>Leasing pipeline</h2><p>Current stages from accepted department records.</p></div></div><div class="table-scroll" role="region" aria-label="Leasing records table" tabindex="0"><table><thead><tr><th scope="col">Record / property</th><th scope="col">Applicant</th><th scope="col">Stage</th><th scope="col">Monthly rent</th><th scope="col">Owner</th><th scope="col">Updated</th></tr></thead><tbody id="leasing-rows"></tbody></table></div><p id="leasing-empty" class="empty">Connect to view leasing records.</p></section>
+    <section id="finance" class="ledger"><div class="section-heading"><div><h2>Financial ledger</h2><p>Totals include posted records across all imported periods. Void records are excluded from totals.</p></div></div><div id="finance-totals" class="totals"></div><div class="table-scroll" role="region" aria-label="Financial records grouped by period" tabindex="0"><table><thead><tr><th scope="col">Period</th><th scope="col">Record / property</th><th scope="col">Category</th><th scope="col">Amount</th><th scope="col">Status</th><th scope="col">Updated</th></tr></thead><tbody id="finance-rows"></tbody></table></div><p id="finance-empty" class="empty">Connect to view financial records.</p></section>
+    <section id="health" class="ledger"><h2>Source health</h2><p>Freshness reflects the last accepted import. Sources become stale after 24 hours.</p><div id="sources" class="sources"></div><details id="failure-details"><summary>Import failure history</summary><ul id="failures"></ul></details></section>
+    <section id="notifications" class="ledger"><h2>Local notification log</h2><p>Recorded reminders and daily summaries; no external delivery.</p><ol id="notification-list" class="notification-list"></ol><p id="notifications-empty" class="empty">Connect to view recorded notifications.</p></section>
+  </main>
+  <footer>Functional local reference implementation using fictional samples. Not a deployed production service.</footer>
+</body>
+</html>

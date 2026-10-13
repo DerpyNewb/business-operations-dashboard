@@ -1,0 +1,74 @@
+{
+  "id": "operations-refresh-local",
+  "name": "Local operations - hourly CSV refresh and reminders",
+  "active": false,
+  "nodes": [
+    {
+      "id": "operations-hourly-schedule",
+      "name": "Hourly Manila schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0],
+      "parameters": {"rule": {"interval": [{"field": "hours", "hoursInterval": 1, "triggerAtMinute": 5}]}},
+      "notes": "Inactive reference export. Select outgoing credentials, verify locally, and deliberately activate before scheduling. Schedule uses Asia/Manila workflow timezone."
+    },
+    {
+      "id": "operations-refresh-http",
+      "name": "Refresh configured CSV files",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [240, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8766/api/refresh",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "{}",
+        "options": {"timeout": 30000, "response": {"response": {"fullResponse": false, "neverError": false, "responseFormat": "json"}}}
+      },
+      "notes": "Select outgoing HTTP Header Auth: Authorization = Bearer <OPERATIONS_API_TOKEN>. Run n8n on the API host. Refresh uses the API's --files folder, not a client-supplied path. HTTP failures stop the workflow."
+    },
+    {
+      "id": "operations-refresh-validation",
+      "name": "Require all sources accepted",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 0],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const result = $input.all()[0].json;\nif (result.status !== 'accepted' || !Array.isArray(result.sources) || result.sources.length !== 3 || result.sources.some(source => source.status !== 'accepted')) {\n  throw new Error('CSV refresh rejected or partial; inspect source health before running reminders.');\n}\nreturn $input.all();"
+      },
+      "notes": "Operational CSV rejections use HTTP 200 with rejected/partial JSON status. Stop here so a failed refresh never silently proceeds to scheduled reminders."
+    },
+    {
+      "id": "operations-reminders-http",
+      "name": "Record reminders and daily summary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8766/api/automations",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "{}",
+        "options": {"timeout": 30000, "response": {"response": {"fullResponse": false, "neverError": false, "responseFormat": "json"}}}
+      },
+      "notes": "Select the same outgoing HTTP Header Auth credential. Records local notifications only; no external messages are sent. HTTP failures stop execution."
+    }
+  ],
+  "connections": {
+    "Hourly Manila schedule": {"main": [[{"node": "Refresh configured CSV files", "type": "main", "index": 0}]]},
+    "Refresh configured CSV files": {"main": [[{"node": "Require all sources accepted", "type": "main", "index": 0}]]},
+    "Require all sources accepted": {"main": [[{"node": "Record reminders and daily summary", "type": "main", "index": 0}]]}
+  },
+  "settings": {"executionOrder": "v1", "timezone": "Asia/Manila"},
+  "pinData": {},
+  "tags": []
+}

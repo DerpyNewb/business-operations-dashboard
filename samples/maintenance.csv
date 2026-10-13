@@ -1,0 +1,4 @@
+record_id,property,version,updated_at,updated_by,summary,priority,status,owner,due_at
+MNT-001,Pine Court / Unit 2,1,2026-10-12T08:00:00Z,Demo Facilities,Kitchen pipe leak,urgent,open,Duty manager,2026-10-12T09:00:00Z
+MNT-002,Pine Court / Unit 5,1,2026-10-12T08:00:00Z,Demo Facilities,Replace door latch,normal,in_progress,Maintenance team,2026-10-14T08:00:00Z
+MNT-003,Lake House / Unit 8,1,2026-10-12T08:00:00Z,Demo Facilities,Repair hallway light,normal,completed,Maintenance team,2026-10-11T08:00:00Z

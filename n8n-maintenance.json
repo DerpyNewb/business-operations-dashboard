@@ -1,0 +1,64 @@
+{
+  "id": "operations-maintenance-local",
+  "name": "Local operations - authenticated maintenance intake",
+  "active": false,
+  "nodes": [
+    {
+      "id": "maintenance-intake-webhook",
+      "name": "Maintenance intake",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "operations-maintenance-intake",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "operations-maintenance",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "notes": "Select an inbound Header Auth credential before use. Use a separate inbound secret. This workflow is inactive and has not been executed in n8n."
+    },
+    {
+      "id": "maintenance-forward-request",
+      "name": "Create request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [240, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8766/api/maintenance",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body) }}",
+        "options": {
+          "timeout": 30000,
+          "response": {"response": {"fullResponse": true, "neverError": true, "responseFormat": "json"}}
+        }
+      },
+      "notes": "Select an outgoing HTTP Header Auth credential: header Authorization, value Bearer followed by your OPERATIONS_API_TOKEN. Never Error is enabled only to forward the actual HTTP status to the caller. Run n8n on the same host as the loopback API; a container's 127.0.0.1 is a different host."
+    },
+    {
+      "id": "maintenance-return-response",
+      "name": "Return API result",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [480, 0],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json.body) }}",
+        "options": {"responseCode": "={{ $json.statusCode }}"}
+      }
+    }
+  ],
+  "connections": {
+    "Maintenance intake": {"main": [[{"node": "Create request", "type": "main", "index": 0}]]},
+    "Create request": {"main": [[{"node": "Return API result", "type": "main", "index": 0}]]}
+  },
+  "settings": {"executionOrder": "v1", "timezone": "Asia/Manila"},
+  "pinData": {},
+  "tags": []
+}

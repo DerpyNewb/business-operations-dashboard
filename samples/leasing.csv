@@ -1,0 +1,4 @@
+record_id,property,version,updated_at,updated_by,applicant,stage,monthly_rent_php,owner
+LSE-001,Pine Court / Unit 3,1,2026-10-12T08:00:00Z,Demo Leasing,Alex Example,inquiry,14000.00,Leasing team
+LSE-002,Lake House / Unit 4,1,2026-10-12T08:00:00Z,Demo Leasing,Sam Example,viewing,18000.00,Leasing team
+LSE-003,Pine Court / Unit 1,1,2026-10-12T08:00:00Z,Demo Leasing,Taylor Example,leased,16000.00,Leasing team

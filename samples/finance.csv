@@ -1,0 +1,6 @@
+record_id,property,version,updated_at,updated_by,period,category,amount_php,status
+FIN-001,Pine Court,1,2026-10-12T08:00:00Z,Demo Finance,2026-10,income,42000.00,posted
+FIN-002,Lake House,1,2026-10-12T08:00:00Z,Demo Finance,2026-10,income,38000.00,posted
+FIN-003,Pine Court,1,2026-10-12T08:00:00Z,Demo Finance,2026-10,expense,6000.00,posted
+FIN-004,Lake House,1,2026-10-12T08:00:00Z,Demo Finance,2026-10,expense,2500.00,posted
+FIN-005,Pine Court,1,2026-10-12T08:00:00Z,Demo Finance,2026-10,income,10000.00,void
