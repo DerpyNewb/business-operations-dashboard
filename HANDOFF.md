@@ -1,6 +1,6 @@
 # Operations Dashboard Handoff
 
-Updated: 2026-10-13. Local repository: `business-operations-dashboard`, branch `feature/operations-dashboard`. No remote or publication.
+Updated: 2026-10-13. Repository: `business-operations-dashboard`, branch `main`. GitHub target: `DerpyNewb/business-operations-dashboard`; publication requested by the user on 2026-10-13.
 
 The user requested the same Superpowers brainstorm-plan-build method as lead-to-CRM and selected CSV. Design/plan are under `docs/superpowers/`.
 
